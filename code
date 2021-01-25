@@ -9,7 +9,7 @@ export GITHUB_TOKEN=9296e639a651cfc06f902184990aba9778932a1e
 
 flux bootstrap github \
   --owner=$GITHUB_USER \
-  --repository=gitops \
+  --repository=gitopsflux \
   --branch=master \
   --path=./clusters/my-cluster \
   --personal
@@ -20,5 +20,15 @@ export GITHUB_TOKEN=db99e76fc96205488cd562ecfb979218f64df738
 export GITHUB_USER=girishgouda
 
 flux reconcile source git flux-system
+
+export GITHUB_TOKEN=cefeb56504c6ca010ab3352e7195dcab6320dd68
+export GITHUB_USER=girishgouda
+
+NAMESPACE=flux-system
+kubectl proxy &
+kubectl get namespace $NAMESPACE -o json |jq '.spec = {"finalizers":[]}' >temp.json
+curl -k -H "Content-Type: application/json" -X PUT --data-binary @temp.json 127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
+
+
 
   
