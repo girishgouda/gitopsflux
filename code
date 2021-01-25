@@ -24,6 +24,10 @@ flux reconcile source git flux-system
 export GITHUB_TOKEN=cefeb56504c6ca010ab3352e7195dcab6320dd68
 export GITHUB_USER=girishgouda
 
+export GITHUB_TOKEN=34f0719afae90f775a841e7052961598fe3965ff
+export GITHUB_USER=girishgouda
+
+
 NAMESPACE=flux-system
 kubectl proxy &
 kubectl get namespace $NAMESPACE -o json |jq '.spec = {"finalizers":[]}' >temp.json
