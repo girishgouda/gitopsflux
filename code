@@ -1,0 +1,24 @@
+662bf5c0ef46a121f9fad935d619a89fcd30eccd
+kube config copied from the local path
+az aks get-credentials --name demo-aks --resource-group k8sStandAloneDemoRG
+
+export GITHUB_TOKEN=662bf5c0ef46a121f9fad935d619a89fcd30eccd
+export GITHUB_USER=girishgouda
+
+export GITHUB_TOKEN=9296e639a651cfc06f902184990aba9778932a1e
+
+flux bootstrap github \
+  --owner=$GITHUB_USER \
+  --repository=gitops \
+  --branch=master \
+  --path=./clusters/my-cluster \
+  --personal
+
+  flux get sources git
+
+export GITHUB_TOKEN=db99e76fc96205488cd562ecfb979218f64df738
+export GITHUB_USER=girishgouda
+
+flux reconcile source git flux-system
+
+  
