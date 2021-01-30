@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: load
+spec:
+  completions: 1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"  
+    spec:
+      containers:
+      - name: load
+        image: openhack/data-load:v1
+        env:
+        - name: SQLFQDN
+          value: "mssql-deployment"
+        - name: SQLUSER
+          value: "SA"
+        - name: SQLDB
+          value: "mydrivingDB"
+        - name: SQLPASS
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: SA_PASSWORD 
+      restartPolicy: Never

@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sqljob
+spec:
+  completions: 1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"  
+    spec:
+      containers:
+      - name: sqljobcontainer
+        image: microsoft/mssql-tools
+        env:
+        - name: SQLPASS
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: SA_PASSWORD 
+        command: ["/opt/mssql-tools/bin/sqlcmd"]
+        args: [ "-S", "mssql-deployment", "-U", "SA", "-P", "$(SQLPASS)", "-I", "-Q", "CREATE DATABASE mydrivingDB" ]
+      restartPolicy: Never

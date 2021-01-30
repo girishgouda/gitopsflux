@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tripviewer-v2
+  labels:
+    app: tripviewer
+    version: v2
+spec:
+  selector:
+    matchLabels:
+      app: tripviewer
+      version: v2
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: tripviewer
+        version: v2
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "80"
+        prometheus.io/scheme: "http"
+    spec:
+      containers:
+      - name: tripviewerwebapp
+        image: demoacrk8s.azurecr.io/demoacrk8s/tripviewer
+        imagePullPolicy: IfNotPresent  
+        env:
+          - name: TRIPS_API_ENDPOINT
+            value: "http://trips.default.svc.cluster.local:80"
+          - name: USERPROFILE_API_ENDPOINT
+            value: "http://user.default.svc.cluster.local:80"
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "1000m"
+  
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tripviewer
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: tripviewer

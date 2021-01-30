@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user
+spec:
+  selector:
+    matchLabels:
+      app: user
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: user
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "80"
+        prometheus.io/scheme: "http"
+    spec:
+      containers:
+      - name: user
+        image: demoacrk8s.azurecr.io/demoacrk8s/user
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "10m"
+          limits:
+            cpu: "1000m"
+        env: 
+        - name: "SQL_USER"
+          value: "SA"     
+        - name: "SQL_PASSWORD"
+          valueFrom:
+            secretKeyRef:
+              name: mssql
+              key: SA_PASSWORD 
+        - name: "SQL_SERVER"
+          value: "mssql-deployment"
+        - name: "SQL_DBNAME"
+          value: "mydrivingDB"
+         
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+spec:
+  selector:
+    app: user
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

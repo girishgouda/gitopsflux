@@ -1,0 +1,120 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: trips-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: tripviewer
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trips-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: tripviewer
+        subset: v1
+      weight: 100
+    # - destination:
+    #     host: tripviewer
+    #     subset: v2
+    #   weight: 50
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: poi
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trips-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/poi
+    route:
+    - destination:
+        port:
+          number: 80
+        host: poi
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: trips
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trips-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/trips
+    route:
+    - destination:
+        port:
+          number: 80
+        host: trips
+
+---
+  
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: user
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trips-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/user
+    route:
+    - destination:
+        port:
+          number: 80
+        host: user
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: userjava
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - trips-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /api/userjava
+    route:
+    - destination:
+        port:
+          number: 80
+        host: userjava
+          
