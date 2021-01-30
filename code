@@ -17,6 +17,21 @@ kubectl proxy &
 kubectl get namespace $NAMESPACE -o json |jq '.spec = {"finalizers":[]}' >temp.json
 curl -k -H "Content-Type: application/json" -X PUT --data-binary @temp.json 127.0.0.1:8001/api/v1/namespaces/$NAMESPACE/finalize
 
+
+flux create source git podinfo \
+  --url=https://github.com/stefanprodan/podinfo \
+  --branch=master \
+  --interval=30s \
+  --export > ./clusters/my-cluster/podinfo-source.yaml
+
+flux create kustomization podinfo \
+  --source=podinfo \
+  --path="./kustomize" \
+  --prune=true \
+  --validation=client \
+  --interval=5m \
+  --export > ./clusters/my-cluster/podinfo-kustomization.yaml
+
 flux create source helm secrets-store-csi-driver --url=https://raw.githubusercontent.com/kubernetes-sigs/secrets-store-csi-driver/master --interval=10m
 flux create source helm secrets-store-csi-driver --url=https://github.com/kubernetes-sigs/secrets-store-csi-driver/tree/master/charts --interval=10m
 flux create hr csi-secrets-store  --interval=10m  --source=HelmRepository/secrets-store-csi-driver --chart=csi-secrets-store --chart-version=1
@@ -49,17 +64,19 @@ flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRe
 flux create source helm csi-secrets-store-provider-azure --url=https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts --interval=10m
 flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRepository/csi-secrets-store-provider-azure --chart=csi-secrets-store-provider-azure --chart-version="0.0.16"
 
-flux bootstrap github \
-  --owner=$GITHUB_USER \
-  --repository=gitopsflux \
+flux create source git sqlbackendsource \
+  --url=https://github.com/girishgouda/gitopsflux \
   --branch=master \
-  --path=./clusters/my-cluster \
-  --personal
+  --interval=30s \
+  --export > ./clusters/my-cluster/sqlbackend-source.yaml
 
 flux create kustomization sqlbackend \
-  --source=gitopsflux \
+  --source=sqlbackendsource \
   --path="./kustomize/sql/overlay/local" \
   --prune=true \
   --validation=client \
   --interval=5m \
   --export > ./clusters/my-cluster/sqlbackend-kustomization.yaml
+
+
+  flux get kustomizations
