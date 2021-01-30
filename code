@@ -49,11 +49,17 @@ flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRe
 flux create source helm csi-secrets-store-provider-azure --url=https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts --interval=10m
 flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRepository/csi-secrets-store-provider-azure --chart=csi-secrets-store-provider-azure --chart-version="0.0.16"
 
+flux bootstrap github \
+  --owner=$GITHUB_USER \
+  --repository=gitopsflux \
+  --branch=master \
+  --path=./clusters/my-cluster \
+  --personal
 
 flux create kustomization sqlbackend \
-  --source=podinfo \
-  --path="./kustomize" \
+  --source=gitopsflux \
+  --path="./kustomize/sql/overlay/local" \
   --prune=true \
   --validation=client \
   --interval=5m \
-  --export > ./clusters/my-cluster/podinfo-kustomization.yaml
+  --export > ./clusters/my-cluster/sqlbackend-kustomization.yaml
