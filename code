@@ -67,7 +67,7 @@ flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRe
 flux create source git sqlbackendsource \
   --url=https://github.com/girishgouda/gitopsflux \
   --branch=master \
-  --interval=30s \
+  --interval=30s 
   --export > ./clusters/my-cluster/sqlbackend-source.yaml
 
 flux create kustomization sqlbackend \
@@ -75,8 +75,8 @@ flux create kustomization sqlbackend \
   --path="./kustomize/sql/overlay/local" \
   --prune=true \
   --validation=client \
-  --interval=5m \
+  --interval=5m 
   --export > ./clusters/my-cluster/sqlbackend-kustomization.yaml
 
-
-  flux get kustomizations
+flux get sources git
+flux get kustomizations
