@@ -142,15 +142,23 @@ flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRe
 flux get sources helm
 flux get helmreleases
 
-flux create source helm nginx-ingress-controller --url=https://charts.bitnami.com/bitnami --interval=10m
-flux create hr my-nginx --source=HelmRepository/nginx-ingress-controller --chart=nginx-ingress-controller
+flux create source helm nginx-ingress-controller \
+  --url=https://charts.bitnami.com/bitnami \
+  --interval=5m \
+  --export > ./clusters/my-cluster/helmrepo-nginx-kustomization.yaml
+
+flux create hr my-nginx \
+  --source=HelmRepository/nginx-ingress-controller \
+  --chart=nginx-ingress-controller \
+  --export > ./clusters/my-cluster/helmrelease-nginx-kustomization.yaml
 
 flux create kustomization ingressapp \
   --source=gitopsflux \
   --path="./kustomize/infra/" \
   --prune=true \
   --validation=client \
-  --interval=5m
+  --interval=5m \
+  --export > ./clusters/my-cluster/ingress-kustomization.yaml
 
 flux create source helm azure-ingress --url=https://marketplace.azurecr.io/helm/v1/repo --interval=10m
 flux create hr my-aks-nginx --source=HelmRepository/azure-ingress --chart=nginx-ingress-controller
