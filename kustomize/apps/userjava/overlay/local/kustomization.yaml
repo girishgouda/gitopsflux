@@ -4,4 +4,4 @@ bases:
 - ../../base
 images:
 - name: demoacrk8s.azurecr.io/demoacrk8s/user-java
-  newTag: "1359"
+  newTag: "1365"

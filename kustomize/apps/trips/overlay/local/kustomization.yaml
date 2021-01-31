@@ -4,4 +4,4 @@ bases:
 - ../../base
 images:
 - name: demoacrk8s.azurecr.io/demoacrk8s/trips
-  newTag: "1360"
+  newTag: "1364"

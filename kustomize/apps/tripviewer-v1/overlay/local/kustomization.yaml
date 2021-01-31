@@ -4,4 +4,4 @@ bases:
 - ../../base
 images:
 - name: demoacrk8s.azurecr.io/demoacrk8s/tripviewer
-  newTag: "1361"
+  newTag: "1363"

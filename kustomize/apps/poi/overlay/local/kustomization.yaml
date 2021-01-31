@@ -4,4 +4,4 @@ bases:
 - ../../base
 images:
 - name: demoacrk8s.azurecr.io/demoacrk8s/poi
-  newTag: "1357"
+  newTag: "1362"
