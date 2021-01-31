@@ -68,7 +68,7 @@ flux create source git gitopsflux \
   --url=https://github.com/girishgouda/gitopsflux \
   --branch=master \
   --interval=30s 
-  --export > ./clusters/my-cluster/sqlbackend-source.yaml
+  --export > ./clusters/my-cluster/git-source.yaml
 
 flux create kustomization sqlbackend \
   --source=gitopsflux \
@@ -83,7 +83,8 @@ flux create kustomization poiapp \
   --path="./kustomize/apps/poi/overlay/local/" \
   --prune=true \
   --validation=client \
-  --interval=5m 
+  --interval=5m \
+  --export > ./clusters/my-cluster/poiapp-kustomization.yaml
   
 
 flux create kustomization tripsapp \
