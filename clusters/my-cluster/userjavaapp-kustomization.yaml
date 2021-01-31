@@ -12,6 +12,6 @@ spec:
     kind: GitRepository
     name: gitopsflux
   validation: client
-   dependsOn: 
+  dependsOn: 
     - name : sqlbackend
 
