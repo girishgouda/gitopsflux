@@ -92,21 +92,24 @@ flux create kustomization tripsapp \
   --path="./kustomize/apps/trips/overlay/local/" \
   --prune=true \
   --validation=client \
-  --interval=5m 
+  --interval=5m \
+  --export > ./clusters/my-cluster/tripsapp-kustomization.yaml
 
 flux create kustomization tripviewerapp \
   --source=gitopsflux \
-  --path="./kustomize/apps/tripviewer-v1/overlay/local/" \
+  --path="./kustomize/apps/tripviewer-v2/overlay/local/" \
   --prune=true \
   --validation=client \
-  --interval=5m
+  --interval=5m \
+  --export > ./clusters/my-cluster/tripviewerapp-kustomization.yaml
 
 flux create kustomization userapp \
   --source=gitopsflux \
   --path="./kustomize/apps/user/overlay/local/" \
   --prune=true \
   --validation=client \
-  --interval=5m
+  --interval=5m \
+  --export > ./clusters/my-cluster/userapp-kustomization.yaml
 
 
 flux create kustomization userjavaapp \
@@ -114,7 +117,8 @@ flux create kustomization userjavaapp \
   --path="./kustomize/apps/userjava/overlay/local/" \
   --prune=true \
   --validation=client \
-  --interval=5m
+  --interval=5m \
+  --export > ./clusters/my-cluster/userjavaapp-kustomization.yaml
 
 flux get sources git
 flux delete source git sqlbackendsource
