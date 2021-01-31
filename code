@@ -137,3 +137,9 @@ flux create kustomization ingressapp \
   --prune=true \
   --validation=client \
   --interval=5m
+
+flux create source helm azure-ingress --url=https://marketplace.azurecr.io/helm/v1/repo --interval=10m
+flux create hr my-aks-nginx --source=HelmRepository/azure-ingress --chart=nginx-ingress-controller
+
+flux delete source helm azure-ingress
+flux delete helmrelease my-aks-nginx
