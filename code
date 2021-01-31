@@ -64,19 +64,76 @@ flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRe
 flux create source helm csi-secrets-store-provider-azure --url=https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts --interval=10m
 flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRepository/csi-secrets-store-provider-azure --chart=csi-secrets-store-provider-azure --chart-version="0.0.16"
 
-flux create source git sqlbackendsource \
+flux create source git gitopsflux \
   --url=https://github.com/girishgouda/gitopsflux \
   --branch=master \
   --interval=30s 
   --export > ./clusters/my-cluster/sqlbackend-source.yaml
 
 flux create kustomization sqlbackend \
-  --source=sqlbackendsource \
-  --path="./kustomize/sql/overlay/local" \
+  --source=gitopsflux \
+  --path="./kustomize/sql/overlay/local/" \
   --prune=true \
   --validation=client \
   --interval=5m 
   --export > ./clusters/my-cluster/sqlbackend-kustomization.yaml
 
+flux create kustomization poiapp \
+  --source=gitopsflux \
+  --path="./kustomize/apps/poi/overlay/local/" \
+  --prune=true \
+  --validation=client \
+  --interval=5m 
+  
+
+flux create kustomization tripsapp \
+  --source=gitopsflux \
+  --path="./kustomize/apps/trips/overlay/local/" \
+  --prune=true \
+  --validation=client \
+  --interval=5m 
+
+flux create kustomization tripviewerapp \
+  --source=gitopsflux \
+  --path="./kustomize/apps/tripviewer-v1/overlay/local/" \
+  --prune=true \
+  --validation=client \
+  --interval=5m
+
+flux create kustomization userapp \
+  --source=gitopsflux \
+  --path="./kustomize/apps/user/overlay/local/" \
+  --prune=true \
+  --validation=client \
+  --interval=5m
+
+
+flux create kustomization userjavaapp \
+  --source=gitopsflux \
+  --path="./kustomize/apps/userjava/overlay/local/" \
+  --prune=true \
+  --validation=client \
+  --interval=5m
+
 flux get sources git
+flux delete source git sqlbackendsource
 flux get kustomizations
+
+helm repo add nginx-stable https://helm.nginx.com/stable
+helm install my-release nginx-stable/nginx-ingress
+
+flux create source helm csi-secrets-store-provider-azure --url=https://raw.githubusercontent.com/Azure/secrets-store-csi-driver-provider-azure/master/charts --interval=10m
+flux create hr csi-secrets-store-provider-azure  --interval=10m  --source=HelmRepository/csi-secrets-store-provider-azure --chart=csi-secrets-store-provider-azure --chart-version="0.0.16"
+
+flux get sources helm
+flux get helmreleases
+
+flux create source helm nginx-ingress-controller --url=https://charts.bitnami.com/bitnami --interval=10m
+flux create hr my-nginx --source=HelmRepository/nginx-ingress-controller --chart=nginx-ingress-controller
+
+flux create kustomization ingressapp \
+  --source=gitopsflux \
+  --path="./kustomize/infra/" \
+  --prune=true \
+  --validation=client \
+  --interval=5m
