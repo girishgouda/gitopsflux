@@ -165,3 +165,14 @@ flux create hr my-aks-nginx --source=HelmRepository/azure-ingress --chart=nginx-
 
 flux delete source helm azure-ingress
 flux delete helmrelease my-aks-nginx
+
+
+-------------------------------------------
+
+helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
+helm install gatekeeper/gatekeeper --generate-name
+
+kubectl get constrainttemplate
+kubectl get constraint
+
+kubectl run nginx --image=nginx --dry-run=client -o yaml  > nginx.yaml
